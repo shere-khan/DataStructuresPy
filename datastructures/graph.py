@@ -42,12 +42,12 @@ class Vertex:
         return hash(id(self))
 
     def __repr__(self):
-        # return "id: {} data: {}".format(self.__id, self.__data)
-        return "id: {}".format(self.__id)
+        return "id: {} data: {}".format(self.__id, self.__data)
+        # return "id: {}".format(self.__id)
 
     def __str__(self):
-        # return "id: {} data: {}".format(self.__id, self.__data)
-        return "id: {}".format(self.__id)
+        return "id: {} data: {}".format(self.__id, self.__data)
+        # return "id: {}".format(self.__id)
 
     def __eq__(self, other):
         return self.get_data() == other.get_data() and self.get_id() == other.get_id()
