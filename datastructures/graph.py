@@ -7,6 +7,12 @@ class Vertex:
     def __hash__(self):
         return hash(id(self))
 
+    def __str__(self):
+        return 'element: {0}'.format(self.element)
+
+    def __repr__(self):
+        return 'element: {0}'.format(self.element)
+
 
 class Edge:
     __slots__ = 'origin', 'destination', 'element'
