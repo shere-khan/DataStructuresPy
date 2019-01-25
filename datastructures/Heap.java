@@ -65,7 +65,7 @@ public class Heap {
 	if (size > 1) {
 	    i = 0;
 	    while (hasLeft(i)) {
-		int left = lChild(i); // I think will always have left child
+		int left = lChild(i);
 		if (hasRight(i)) {
 		    int right = rChild(i);
 		    properChild = heapOrder.apply(left, right) ? left : right;
