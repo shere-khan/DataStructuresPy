@@ -22,6 +22,14 @@ public class Heap {
 	return 2 * i + 2;
     }
 
+    private boolean hasLeft(i) {
+	return 2 * i + 1 <= (size - 1)
+    }
+
+    private boolean hasRight(i) {
+	return 2 * i + 2 <= (size - 1)
+    }
+
     private int parent(int i) {
 	if (i == 0) {
 	    throw new IllegalArgumentException();
@@ -46,7 +54,7 @@ public class Heap {
 
     private void heapUp(int i) {
 	if (2 * i > size) {
-	    throw new IndexOutOfBoundsException("oob");
+	    throw new IndexOutOfBoundsException("Index out of bounds");
 	}
 	do {
 	    int properChild = getProperChild(i);
@@ -57,6 +65,20 @@ public class Heap {
     }
 
     private void heapDown() {
+	if (size > 1) {
+	    i = 0;
+	    while (hasLeft(i)) {
+		int left = lChild(i); // I think will always have left child
+		if (hasRight(i)) {
+		    int right = rChild(i);
+		    properChild = heapOrder.apply(left, right) ? left : right;
+		} else
+		    properChild = left;
+		int temp = array[i];
+		array[i] = array[left];
+		array[left] = temp;
+	    }
+	}
     }
     
     private int[] resize() {
@@ -78,9 +100,35 @@ public class Heap {
 	}
     }
 
+    public int remove() {
+	if (size == 0) {
+	    throw new IllegalArgumentException();
+	}
+	if (size == 1) {
+	    int val = array[0];
+	    array[0] = null;
+	    size --;
+
+	    return val;
+	}
+	int val = array[0];
+	array[0] = array[size - 1];
+	array[size - 1] = null;
+	size--;
+	heapDown();
+
+	return val;
+    }
+
     public static void main(String [] args) {
 	BiFunction<Integer, Integer, Boolean> heapOrder = (a, b) -> a < b;
 	Heap heap = new Heap(heapOrder);
 	heap.insert(7);
+	heap.insert(3);
+	heap.insert(9);
+	heap.insert(2);
+	heap.insert(8);
+	heap.insert(3);
+	heap.insert(2);
     }
 }
