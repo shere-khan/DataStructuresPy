@@ -31,12 +31,10 @@ public class Heap {
     }
 
     private int parent(int i) {
-	if (i == 0) {
+	if (i == 0)
 	    throw new IllegalArgumentException();
-	}
-	if (i == 1 || i == 2) {
+	if (i == 1 || i == 2)
 	    return 0;
-	}
 	return (i - 1) / 2;
     }
 
@@ -53,9 +51,8 @@ public class Heap {
     }
 
     private void heapUp(int i) {
-	if (2 * i > size) {
+	if (2 * i > size)
 	    throw new IndexOutOfBoundsException("Index out of bounds");
-	}
 	do {
 	    int properChild = getProperChild(i);
 	    int temp = array[i];
@@ -90,9 +87,8 @@ public class Heap {
 	    array = new int[1];
 	    array[0] = val;
 	} else {
-	    if (size == array.length - 1) {
+	    if (size == array.length - 1)
 		resize();
-	    }
 	    System.out.println(array.length);
 	    array[size] = val;
 	    size++;
@@ -101,9 +97,8 @@ public class Heap {
     }
 
     public int remove() {
-	if (size == 0) {
+	if (size == 0)
 	    throw new IllegalArgumentException();
-	}
 	if (size == 1) {
 	    int val = array[0];
 	    array[0] = null;
@@ -111,6 +106,7 @@ public class Heap {
 
 	    return val;
 	}
+
 	int val = array[0];
 	array[0] = array[size - 1];
 	array[size - 1] = null;
