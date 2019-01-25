@@ -39,9 +39,13 @@ public class BinaryHeap {
     }
 
     private int getProperChild(int i) {
+	System.out.println("getproperchild i: " + i);
 	int left = lChild(i);
+	System.out.println("left: " + left);
 	int right = rChild(i);
+	System.out.println("right: " + right);
 	int properChild = heapOrder.apply(left, right) ? left : right;
+	System.out.println("getproperchild properchild index: " + properChild);
 
 	return properChild;
     }
@@ -51,17 +55,23 @@ public class BinaryHeap {
     }
 
     private void heapUp(int i) {
+	System.out.println("heapup start index: " + i);
+	System.out.println("heapup size: " + size);
+	System.out.println("heapup array length: " + array.length);
 	if (2 * i > size)
 	    throw new IndexOutOfBoundsException("Index out of bounds");
 	if (size > 1) {
 	    do {
 		int properChild = getProperChild(i);
-		// System.out.println("properchild: " + properChild);
+		System.out.println("properchild index: " + properChild);
 		int temp = array[i];
 		array[i] = array[properChild];
 		array[properChild] = temp;
 		// System.out.println("63 i: " + i);
-		i = getParent(i);
+		if (hasParent(i))
+		    i = getParent(i);
+		else
+		    break;
 	    } while (i > 0);
 	}
 	// } while (hasParent(i) && parent(i) != 0);
@@ -90,24 +100,21 @@ public class BinaryHeap {
     }
 
     public void insert(int val) {
-	// System.out.println("inserting: " + val);
+	System.out.println("inserting: " + val);
 	if (size == 0) {
 	    array = new int[1];
 	    array[0] = val;
+	    size++;
 	} else {
-	    // System.out.println("93: " + array.length);
 	    if (size >= array.length - 1)
 		resize();
-	    System.out.println("96 arraylength: " + array.length);
-	    System.out.println("96 size: " + size);
-	    System.out.println("96 array[size - 1]: " + array[size - 1]);
 	    array[size] = val;
-	    System.out.println("96 array[size - 1]: " + array[size - 1]);
-	    heapUp(size / 2);
+	    size++;
+	    System.out.println("insert size: " + size);
+	    heapUp((size - 2) / 2);
 	}
 	System.out.println(Arrays.toString(array));
 	System.out.println();
-	size++;
     }
 
     public int remove() {
