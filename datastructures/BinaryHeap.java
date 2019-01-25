@@ -30,6 +30,10 @@ public class BinaryHeap {
 	return 2 * i + 2 <= (size - 1);
     }
 
+    private boolean hasParent(int i) {
+	return i > 0 ? true : false;
+    }
+
     private int getParent(int i) {
 	if (i == 0)
 	    throw new IllegalArgumentException();
@@ -38,16 +42,26 @@ public class BinaryHeap {
 	return (i - 1) / 2;
     }
 
+    private void swap(int[] theArray, int i, int j) {
+	int temp = theArray[i];
+	theArray[i] = theArray[j];
+	theArray[j] = temp;
+    }
+
     private int getProperChild(int i) {
 	System.out.println("getproperchild i: " + i);
 	int left = lChild(i);
 	System.out.println("left: " + left);
-	int right = rChild(i);
-	System.out.println("right: " + right);
-	int properChild = heapOrder.apply(left, right) ? left : right;
-	System.out.println("getproperchild properchild index: " + properChild);
+	if (hasRight(i)) {
+	    int right = rChild(i);
+	    System.out.println("right: " + right);
+	    int properChild = heapOrder.apply(array[left], array[right])
+		? left : right;
+	    System.out.println("getproperchild properchild index: " + properChild);
 
-	return properChild;
+	    return properChild;
+	}
+	return left;
     }
 
     private void heapify() {
@@ -63,16 +77,16 @@ public class BinaryHeap {
 	if (size > 1) {
 	    do {
 		int properChild = getProperChild(i);
-		System.out.println("properchild index: " + properChild);
-		int temp = array[i];
-		array[i] = array[properChild];
-		array[properChild] = temp;
-		// System.out.println("63 i: " + i);
-		if (hasParent(i))
-		    i = getParent(i);
-		else
+		// System.out.println("properchild index: " + properChild);
+		System.out.println("before swap: " + Arrays.toString(array));
+		if (heapOrder.apply(array[properChild], array[i]))
+		    swap(array, i, properChild);
+		System.out.println("after swap: " + Arrays.toString(array));
+		if (!hasParent(i))
 		    break;
-	    } while (i > 0);
+		i = getParent(i);
+		System.out.println("parent i: " + i);
+	    } while (i >= 0);
 	}
 	// } while (hasParent(i) && parent(i) != 0);
     }
@@ -82,21 +96,27 @@ public class BinaryHeap {
 	    int i = 0;
 	    while (hasLeft(i)) {
 		int left = lChild(i);
+		int properChild;
 		if (hasRight(i)) {
 		    int right = rChild(i);
-		    int properChild = heapOrder.apply(left, right) ? left : right;
+		    System.out.println("right index: " + right);
+		    properChild = heapOrder.apply(array[right], array[left])
+			? left : right;
 		} else {
-		    int properChild = left;
+		    properChild = left;
 		}
-		int temp = array[i];
-		array[i] = array[left];
-		array[left] = temp;
+		swap(array, i, left);
+		i = properChild;
 	    }
 	}
     }
     
     private void resize() {
 	array = Arrays.copyOf(array, array.length + 1);
+    }
+
+    private void downSize() {
+	array = Arrays.copyOf(array, array.length - 1);
     }
 
     public void insert(int val) {
@@ -129,10 +149,15 @@ public class BinaryHeap {
 	}
 
 	int val = array[0];
+	System.out.println("remove size: " + size);
 	array[0] = array[size - 1];
-	// array[size - 1] = null;
+	System.out.println("remove array[0] = array[size - 1]: " + array[0]);
+	downSize();
+	System.out.println("array after remove: " + Arrays.toString(array));
 	size--;
+	// array[size - 1] = null;
 	heapDown();
+	System.out.println("array after heapDown: " + Arrays.toString(array));
 
 	return val;
     }
