@@ -1,56 +1,82 @@
 import java.lang.*;
 import java.util.*;
+import java.util.stream.IntStream;
 
 /*
- * Implementation of a hash table that can only accept positive integers.
- * Negative integers suggest a null index.
- */
+ * Implementation of a hash table
+*/
 public class HashTable {
 
     private String[] keys;
     private String[] values;
-    private int size;
+    private int keysSize;
 
     public HashTable() {
 	keys = new String[20];
-	values = new String[20];
+	values = new String[100];
+	keysSize = 0;
     }
 
-    private int[] resize(int[] array) {
-	return Arrays.copyOf(array, array.length + 1);
-    }
-
-    private int[] downsize(int[] array) {
-	return Arrays.copyOf(array, array.length - 1);
-    }
-
-    private int[][] getTable() {
-	return table;
-    }
-
-    private int hash(int key) {
-	int hc = key % size;
+    private int getHashCode(String key) {
+	int ascii = stringToAscii(key);
+	int hc;
+	int i = -1;
 	do {
-	} while (table[hc] != null);
+	    i++;
+	    int offset = ascii % values.length + (int) Math.pow(i, 2);
+	    hc = offset % values.length;
+	} while (keys[hc] != null);
+
+	return hc;
+    }
+
+    private int hashFind(String key) {
+	int ascii = stringToAscii(key);
+	int hc;
+	int i = -1;
+	do {
+	    i++;
+	    int offset = ascii % values.length + (int) Math.pow(i, 2);
+	    hc = offset % values.length;
+	} while (keys[hc] != null);
+
+	return hc;
+    }
+
+    private int stringToAscii(String s) {
+	StringBuilder sb = new StringBuilder();
+	char[] letters = s.toCharArray();
+	for (char ch : letters)
+	    sb.append((byte) ch);
 
 	return 0;
     }
 
-    public void put(int key, int val) {
-	
+    public void put(String key, String val) {
+	int hc = getHashCode(key);
+	keys[hc] = key;
+	values[hc] = val;
     }
 
-    public void get(int key) {
-	
+    public String get(String key) {
+	if (Arrays.stream(keys).anyMatch(key::equals)) {
+	    // return values[hashFind(
+	}
+	return null;
     }
 
     public static void main(String[] args) {
-	HashTable hashTable = new HashTable(2, 2);
-	// int[][] table = hashTable.getTable();
-	// table[0][0] = 3;
-	// table[0][1] = 5;
-	// table[1][0] = 8;
-	// table[1][1] = 2;
-	// System.out.println(Arrays.deepToString(table));
+	HashTable hashTable = new HashTable();
+	Random r = new Random();
+	r.setSeed(34);
+	int[] array = new int[100];
+	for (int i = 0; i < array.length; i++)
+	    array[i] = r.nextInt(10);
+	// System.out.println(Arrays.toString(array));
+	for (int i = 0; i < array.length; i++) {
+	    if (IntStream.of(array).anyMatch(x -> x == 3))
+		break;
+	}
+	System.out.println("contains");
     }
 }
