@@ -61,15 +61,27 @@ public class Trie {
 	List<String> letters = convertStringToListofCharacterStrings(word);
 	System.out.println("letters: " + letters);
 	while (!o.getValue().equals("*")) {
-	    if (!letters.isEmpty()) {
+	    if (letters.size() > 1) {
 		String s = letters.remove(0);
-		System.out.println("letter value: " + s);
-		System.out.println("Node value: " + o.getValue());
+		System.out.println("letter to match value: " + s);
+		// System.out.println("Node value: " + o.getValue());
 		Node child = o.getChildren().get(s);
+		System.out.println("keyset: " + o.getChildren().keySet());
 		if (child != null) {
+		    System.out.println("child value: " + child.getValue());
 		    o = child;
 		} else {
-		    System.out.println("word not found");
+		    System.out.println("child null");
+		    System.out.println();
+		}
+	    } else {
+		String s = letters.remove(0);
+		Node child = o.getChildren().get(s);
+		if (child != null) {
+		    System.out.println("child letter: " + child.getValue());
+		    System.out.println("# times appear: "
+			    + child.getPositions().size());
+		    break;
 		}
 	    }
 	}
@@ -88,25 +100,27 @@ public class Trie {
 	while (!o.getValue().equals("*")) {
 	    if (letters.size() > 1) {
 		String s = letters.remove(0);
+		System.out.println("letter: " + s);
 		Node child = o.getChildren().get(s);
 		if (child == null) {
 		    Node newChild = new Node();
 		    newChild.setChildren(new HashMap<String, Node>());
 		    newChild.setPositions(new ArrayList<Integer>());
 		    newChild.setValue(s);
+		    o.getChildren().put(s, newChild);
 		    o = newChild;
 		} else {
 		    o = child;
 		}
 	    } else {
-		// System.out.println("letters size: " + letters.size());
+		System.out.println("letters size: " + letters.size());
 		String s = letters.remove(0);
 		Node child = o.getChildren().get(s);
 		if (child != null) {
-		    // System.out.println("child exists");
+		    System.out.println("child exists");
 		    child.getPositions().add(0);
 		} else {
-		    // System.out.println("child null");
+		    System.out.println("child null");
 		    Node grandKid = new Node();
 		    grandKid.setChildren(new HashMap<String, Node>());
 		    grandKid.setPositions(new ArrayList<Integer>());
@@ -117,6 +131,7 @@ public class Trie {
 		    children.put("*", grandKid);
 		    newChild.setChildren(children);
 		    newChild.setPositions(new ArrayList<Integer>());
+		    newChild.getPositions().add(0);
 		    newChild.setValue(s);
 
 		    o.getChildren().put(s, newChild);
@@ -141,13 +156,14 @@ public class Trie {
 	    int i = 0;
 	    for (String word : words) {
 		System.out.println("inserting: " + word);
+		if (word.equals("schizophrenia"))
+		    i++;
 		t.insert(word);
-		// if (i == 30)
-		    // break;
-		i++;
 		System.out.println();
 	    }
-	    t.find("learning");
+	    System.out.println("schiz count: " + i);
+	    System.out.println();
+	    t.find("schizophrenia");
 	} catch (FileNotFoundException e) {
 	    System.out.println(e.getMessage());
 	}
