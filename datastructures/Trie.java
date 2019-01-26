@@ -58,11 +58,12 @@ public class Trie {
 
     public void find(String word) {
 	Node o = root;
-	List<String> letters = new ArrayList<String>(Arrays.asList(word));
+	List<String> letters = convertStringToListofCharacterStrings(word);
+	System.out.println("letters: " + letters);
 	while (!o.getValue().equals("*")) {
-	    System.out.println();
 	    if (!letters.isEmpty()) {
 		String s = letters.remove(0);
+		System.out.println("letter value: " + s);
 		System.out.println("Node value: " + o.getValue());
 		Node child = o.getChildren().get(s);
 		if (child != null) {
@@ -74,8 +75,15 @@ public class Trie {
 	}
     }
 
+    private List<String> convertStringToListofCharacterStrings(String word) {
+	List<String> wordList = new ArrayList<String>();
+	for (char c : word.toCharArray())
+	    wordList.add(String.valueOf(c));
+	return wordList;
+    }
+
     public void insert(String word) {
-	List<String> letters = new ArrayList<String>(Arrays.asList(word));
+	List<String> letters = convertStringToListofCharacterStrings(word);
 	Node o = root;
 	while (!o.getValue().equals("*")) {
 	    if (letters.size() > 1) {
@@ -91,14 +99,14 @@ public class Trie {
 		    o = child;
 		}
 	    } else {
-		System.out.println("letters size: " + letters.size());
+		// System.out.println("letters size: " + letters.size());
 		String s = letters.remove(0);
 		Node child = o.getChildren().get(s);
 		if (child != null) {
-		    System.out.println("child exists");
+		    // System.out.println("child exists");
 		    child.getPositions().add(0);
 		} else {
-		    System.out.println("child null");
+		    // System.out.println("child null");
 		    Node grandKid = new Node();
 		    grandKid.setChildren(new HashMap<String, Node>());
 		    grandKid.setPositions(new ArrayList<Integer>());
@@ -134,11 +142,12 @@ public class Trie {
 	    for (String word : words) {
 		System.out.println("inserting: " + word);
 		t.insert(word);
-		if (i == 30)
-		    break;
+		// if (i == 30)
+		    // break;
 		i++;
 		System.out.println();
 	    }
+	    t.find("learning");
 	} catch (FileNotFoundException e) {
 	    System.out.println(e.getMessage());
 	}
