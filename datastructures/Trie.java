@@ -43,7 +43,11 @@ public class Trie {
     private Node root;
 
     public Trie() {
-	root = new Node();
+	Node o = new Node();
+	o.setChildren(new HashMap<String, Node>());
+	// o.setPositions(new ArrayList<Integer>());
+	o.setValue("@");
+	root = o;
     }
 
     public Trie(List<String> words) {
@@ -57,10 +61,44 @@ public class Trie {
 	return null;
     }
 
-    private void insert(String s) {
-	if (root == null)
-	    throw new IllegalArgumentException("root is null");
+    private void insert(String str) {
+	List<String> letters = new ArrayList<String>(Arrays.asList(str));
+	Node o = root;
+	while (!o.getValue().equals("*")) {
+	    if (letters.size() > 1) {
+		String s = letters.remove(0);
+		Node child = o.getChildren().get(s);
+		if (child == null) {
+		    Node newChild = new Node();
+		    newChild.setChildren(new HashMap<String, Node>());
+		    newChild.setPositions(new ArrayList<Integer>());
+		    newChild.setValue(s);
+		    o = newChild;
+		} else {
+		    o = child;
+		}
+	    } else {
+		String s = letters.remove(0);
+		Node child = o.getChildren().get(s);
+		if (child == null) {
+		    child.getPositions().add(0);
+		} else {
+		    Node grandKid = new Node();
+		    grandKid.setChildren(new HashMap<String, Node>());
+		    grandKid.setPositions(new ArrayList<Integer>());
+		    grandKid.setValue("*");
 
+		    Node newChild = new Node();
+		    Map<String, Node> children = new HashMap<String, Node>();
+		    children.put("*", grandKid);
+		    newChild.setChildren(children);
+		    newChild.setPositions(new ArrayList<Integer>());
+		    newChild.setValue(s);
+
+		    o.getChildren().put(s, newChild);
+		}
+	    }
+	}
     }
 
     public static void main(String[] args) {
