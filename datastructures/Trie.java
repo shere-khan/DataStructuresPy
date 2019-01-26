@@ -56,13 +56,26 @@ public class Trie {
 	    insert(word);
     }
 
-    private Node traverse(Node o) {
-
-	return null;
+    public void find(String word) {
+	Node o = root;
+	List<String> letters = new ArrayList<String>(Arrays.asList(word));
+	while (!o.getValue().equals("*")) {
+	    System.out.println();
+	    if (!letters.isEmpty()) {
+		String s = letters.remove(0);
+		System.out.println("Node value: " + o.getValue());
+		Node child = o.getChildren().get(s);
+		if (child != null) {
+		    o = child;
+		} else {
+		    System.out.println("word not found");
+		}
+	    }
+	}
     }
 
-    private void insert(String str) {
-	List<String> letters = new ArrayList<String>(Arrays.asList(str));
+    public void insert(String word) {
+	List<String> letters = new ArrayList<String>(Arrays.asList(word));
 	Node o = root;
 	while (!o.getValue().equals("*")) {
 	    if (letters.size() > 1) {
@@ -78,11 +91,14 @@ public class Trie {
 		    o = child;
 		}
 	    } else {
+		System.out.println("letters size: " + letters.size());
 		String s = letters.remove(0);
 		Node child = o.getChildren().get(s);
-		if (child == null) {
+		if (child != null) {
+		    System.out.println("child exists");
 		    child.getPositions().add(0);
 		} else {
+		    System.out.println("child null");
 		    Node grandKid = new Node();
 		    grandKid.setChildren(new HashMap<String, Node>());
 		    grandKid.setPositions(new ArrayList<Integer>());
@@ -97,6 +113,7 @@ public class Trie {
 
 		    o.getChildren().put(s, newChild);
 		}
+		break;
 	    }
 	}
     }
@@ -112,12 +129,15 @@ public class Trie {
 		String word = sc.next();
 		words.add(word);
 	    }
-	    Trie t = new Trie(words);
+	    Trie t = new Trie();
 	    int i = 0;
 	    for (String word : words) {
+		System.out.println("inserting: " + word);
 		t.insert(word);
-		if (i == 0)
+		if (i == 30)
 		    break;
+		i++;
+		System.out.println();
 	    }
 	} catch (FileNotFoundException e) {
 	    System.out.println(e.getMessage());
