@@ -1,5 +1,6 @@
 import java.lang.*;
 import java.util.*;
+import java.io.*;
 import java.util.stream.IntStream;
 
 /*
@@ -12,8 +13,8 @@ public class HashTable {
     private int keysSize;
 
     public HashTable() {
-	keys = new String[100];
-	values = new String[100];
+	keys = new String[1000];
+	values = new String[1000];
 	keysSize = 0;
     }
 
@@ -23,8 +24,19 @@ public class HashTable {
 	int i = -1;
 	do {
 	    i++;
-	    int offset = ascii % values.length + (int) Math.pow(i, 2);
-	    hc = offset % values.length;
+	    int m1 = i * i;
+	    int m2 = (int) Math.pow(i, 2);
+	    // int offset = ascii % values.length + m2;
+	    // System.out.println("offset: " + offset);
+	    // hc = offset % values.length;
+	    hc = (ascii + m2) % values.length;
+	    System.out.println("hc: " + hc);
+	    // if (i == 50) {
+	    //     break;
+	    // }
+	    if (keys[hc] != null) {
+		System.out.println(keys[hc]);
+	    }
 	} while (keys[hc] != null);
 
 	return hc;
@@ -68,34 +80,25 @@ public class HashTable {
 
     public static void main(String[] args) {
 	HashTable hashTable = new HashTable();
-	hashTable.put("word", "7"); 
-	String val = hashTable.get("word");
-	System.out.println("value: " + val);
-
-	hashTable.put("apple", "3"); 
-	String word = hashTable.get("word");
-	String apple = hashTable.get("apple");
-	System.out.println("value: " + word);
-	System.out.println("value: " + apple);
-
-	hashTable.put("orange", "5"); 
-	word = hashTable.get("word");
-	apple = hashTable.get("apple");
-	String orange = hashTable.get("orange");
-	System.out.println("value: " + word);
-	System.out.println("value: " + apple);
-	System.out.println("value: " + orange);
-
-	// Random r = new Random();
-	// r.setSeed(34);
-	// int[] array = new int[100];
-	// for (int i = 0; i < array.length; i++)
-	//     array[i] = r.nextInt(10);
-	// System.out.println(Arrays.toString(array));
-	// for (int i = 0; i < array.length; i++) {
-	//     if (IntStream.of(array).anyMatch(x -> x == 3))
-	// 	break;
-	// }
-	// System.out.println("contains");
+	Random r = new Random();
+	r.setSeed(34);
+	File f = new File("/home/justin/git/" +
+		"DataStructuresPy/datastructures/wordlist.txt");
+	try {
+	    Scanner sc = new Scanner(f);
+	    int i = 1;
+	    while (sc.hasNextLine()) {
+		String line = sc.nextLine();
+		System.out.println("word index: " + i);
+		System.out.println("key: " + line);
+		int num = r.nextInt(100);
+		System.out.println("val: " + num);
+		hashTable.put(line, Integer.toString(num));
+		i++;
+		System.out.println();
+	    }
+	} catch (FileNotFoundException e) {
+	    System.out.println(e.getMessage());
+	}
     }
 }
