@@ -12,7 +12,7 @@ public class HashTable {
     private int keysSize;
 
     public HashTable() {
-	keys = new String[20];
+	keys = new String[100];
 	values = new String[100];
 	keysSize = 0;
     }
@@ -71,6 +71,21 @@ public class HashTable {
 	hashTable.put("word", "7"); 
 	String val = hashTable.get("word");
 	System.out.println("value: " + val);
+
+	hashTable.put("apple", "3"); 
+	String word = hashTable.get("word");
+	String apple = hashTable.get("apple");
+	System.out.println("value: " + word);
+	System.out.println("value: " + apple);
+
+	hashTable.put("orange", "5"); 
+	word = hashTable.get("word");
+	apple = hashTable.get("apple");
+	String orange = hashTable.get("orange");
+	System.out.println("value: " + word);
+	System.out.println("value: " + apple);
+	System.out.println("value: " + orange);
+
 	// Random r = new Random();
 	// r.setSeed(34);
 	// int[] array = new int[100];
