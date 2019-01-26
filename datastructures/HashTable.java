@@ -17,7 +17,7 @@ public class HashTable {
 	keysSize = 0;
     }
 
-    private int getHashCode(String key) {
+    private int getHashCodeInsert(String key) {
 	int ascii = stringToAscii(key);
 	int hc;
 	int i = -1;
@@ -30,7 +30,7 @@ public class HashTable {
 	return hc;
     }
 
-    private int hashFind(String key) {
+    private int getHashCodeLookup(String key) {
 	int ascii = stringToAscii(key);
 	int hc;
 	int i = -1;
@@ -38,7 +38,7 @@ public class HashTable {
 	    i++;
 	    int offset = ascii % values.length + (int) Math.pow(i, 2);
 	    hc = offset % values.length;
-	} while (keys[hc] != null);
+	} while (keys[hc] != key);
 
 	return hc;
     }
@@ -53,30 +53,34 @@ public class HashTable {
     }
 
     public void put(String key, String val) {
-	int hc = getHashCode(key);
+	int hc = getHashCodeInsert(key);
 	keys[hc] = key;
 	values[hc] = val;
     }
 
     public String get(String key) {
-	if (Arrays.stream(keys).anyMatch(key::equals)) {
-	    // return values[hashFind(
-	}
-	return null;
+	if (keys.length == 0)
+	    throw new IllegalArgumentException();
+	int hc = getHashCodeLookup(key);
+
+	return values[hc];
     }
 
     public static void main(String[] args) {
 	HashTable hashTable = new HashTable();
-	Random r = new Random();
-	r.setSeed(34);
-	int[] array = new int[100];
-	for (int i = 0; i < array.length; i++)
-	    array[i] = r.nextInt(10);
+	hashTable.put("word", "7"); 
+	String val = hashTable.get("word");
+	System.out.println("value: " + val);
+	// Random r = new Random();
+	// r.setSeed(34);
+	// int[] array = new int[100];
+	// for (int i = 0; i < array.length; i++)
+	//     array[i] = r.nextInt(10);
 	// System.out.println(Arrays.toString(array));
-	for (int i = 0; i < array.length; i++) {
-	    if (IntStream.of(array).anyMatch(x -> x == 3))
-		break;
-	}
-	System.out.println("contains");
+	// for (int i = 0; i < array.length; i++) {
+	//     if (IntStream.of(array).anyMatch(x -> x == 3))
+	// 	break;
+	// }
+	// System.out.println("contains");
     }
 }
