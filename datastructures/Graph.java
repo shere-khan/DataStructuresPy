@@ -131,21 +131,32 @@ public class Graph {
     public static void main(String[] args) {
 	Graph g = new Graph(false);
 	g.insertEdge("A", "B", 2);
+
+	g.insertEdge("E", "A", 3);
+	g.insertEdge("E", "B", 1);
+	g.insertEdge("E", "F", 3);
+
+	g.insertEdge("B", "C", 8);
+	g.insertEdge("B", "G", 1);
+
+	g.insertEdge("F", "B", 6);
+	g.insertEdge("F", "C", 1);
+
+	g.insertEdge("C", "D", 6);
+	g.insertEdge("C", "H", 5);
+
+	g.insertEdge("G", "D", 2);
+
 	g.printTable();
 	System.out.println();
 
-	g.insertEdge("F", "A", 3);
-	g.printTable();
-	System.out.println();
+	// System.out.println(String.format("%s -> %s: %s",
+	// 	    "A", "B", g.getEdgeWeightAsString("A", "B")));
+	// System.out.println(String.format("%s -> %s: %s",
+	// 	    "E", "A", g.getEdgeWeightAsString("E", "A")));
+	// System.out.println(String.format("%s -> %s: %s",
+	// 	    "E", "B", g.getEdgeWeightAsString("E", "B")));
 
-	g.insertEdge("F", "E", 9);
-	g.printTable();
-	System.out.println();
-	System.out.println(String.format("%s -> %s: %s",
-		    "A", "B", g.getEdgeWeightAsString("A", "B")));
-	System.out.println(String.format("%s -> %s: %s",
-		    "F", "A", g.getEdgeWeightAsString("F", "A")));
-	System.out.println(String.format("%s -> %s: %s",
-		    "F", "E", g.getEdgeWeightAsString("F", "E")));
+	// Dijkstra
     }
 }
