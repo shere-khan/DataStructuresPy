@@ -11,22 +11,23 @@ public class Graph {
 	    this.value = value;
 	}
 
-	/* Duplicate "value" fields not allowed */
 	@Override
 	public int hashCode() {
 	    final int prime = 31;
 	    int result = 17;
 	    result = prime * result + value.hashCode();
-	    System.out.println("hashcode val: " + value);
-	    System.out.println("hashcode result: " + result);
 
 	    return result;
 	}
 
-	/* Duplicate "value" fields not allowed */
 	@Override
 	public boolean equals(Object o) {
 	    return value.equals(((Node) o).value) ? true : false;
+	}
+
+	@Override
+	public String toString() {
+	    return value;
 	}
     }
 
@@ -50,12 +51,21 @@ public class Graph {
 	this.isDirected = isDirected;
 	this.table = new HashMap<Node, Map<Node, Edge>>();
     }
+
+    private void printTable() {
+	System.out.println("printing table");
+	for (Map.Entry<Node, Map<Node, Edge>> entry : table.entrySet()) {
+	    System.out.println("values in " + entry.getKey().toString());
+	}
+    }
     
     private Node addNodeToTable(String v) {
 	Node n = new Node(v);
-	for (Map<Node, Edge> map: table.values())
+	table.put(n, new HashMap<Node, Edge>());
+	for (Map<Node, Edge> map: table.values()) {
+	    // System.out.println("value: " + map.toString());
 	    map.put(n, null);
-	table.put(n, null);
+	}
 
 	return n;
     }
@@ -94,14 +104,7 @@ public class Graph {
 
     public static void main(String[] args) {
 	Graph g = new Graph(false);
-	g.testAddNode("A");
-	g.testAddNode("B");
-	for (Node k : g.table.keySet()) {
-	    System.out.println(k.value);
-	}
-	g.testAddNode("A");
-	for (Node k : g.table.keySet()) {
-	    System.out.println(k.value);
-	}
+	g.insertEdge("A", "B", 2);
+	g.printTable();
     }
 }
