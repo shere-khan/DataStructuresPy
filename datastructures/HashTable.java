@@ -61,7 +61,7 @@ public class HashTable {
 	for (char ch : letters)
 	    sb.append((byte) ch);
 
-	return 0;
+	return Integer.parseInt(sb);
     }
 
     public void put(String key, String val) {
