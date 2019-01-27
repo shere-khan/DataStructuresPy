@@ -67,11 +67,22 @@ public class Graph {
     }
     
     private Node addNodeToTable(Node n) {
+	System.out.println("adding node " + n.toString());
+	// Insert node into table.
 	table.put(n, new HashMap<Node, Edge>());
-	for (Map<Node, Edge> map: table.values()) {
-	    // System.out.println("value: " + map.toString());
+	// Associate node with each existing node.
+	for (Map<Node, Edge> map: table.values())
 	    map.put(n, null);
-	}
+	// Associate each existing node with new node.
+	for (Node o : table.keySet())
+	    table.get(n).put(o, null);
+	// for (Map.Entry<Node, Map<Node, Edge>> entry : table.entrySet()) {
+	//     Node o = entry.getKey(); 
+	//     Map<Node, Edge> map = entry.getValue();
+	//     System.out.println(String.format("add %s to map %s",
+	// 	       	n.toString(), o.toString()));
+	//     map.put(n, null);
+	// }
 
 	return n;
     }
@@ -93,13 +104,20 @@ public class Graph {
 	return Integer.parseInt(sb.toString());
     }
 
+    public String getEdgeWeightAsString(String from, String to) {
+	// Map<Node, Edge> tab2 = table.get(new Node(from));
+	// Edge e = tab2.get(new Node(to));
+	// String edgeWeight = e.weight.toString();
+	return table.get(new Node(from)).get(new Node(to)).weight.toString();
+    }
+
     public void insertEdge(String v1, String v2, Integer w) {
 	Node n1 = new Node(v1);
 	Node n2 = new Node(v2);
-	if (!table.containsKey(n1)) {
+	if (!table.containsKey(n1))
 	    n1 = addNodeToTable(n1);
-	} 
 	if (!table.containsKey(n2)) {
+	    System.out.println("contains " + n2.toString());
 	    n2 = addNodeToTable(n2);
 	}
 	if (n1 == null || n2 == null)
@@ -115,7 +133,19 @@ public class Graph {
 	g.insertEdge("A", "B", 2);
 	g.printTable();
 	System.out.println();
+
 	g.insertEdge("F", "A", 3);
 	g.printTable();
+	System.out.println();
+
+	g.insertEdge("F", "E", 9);
+	g.printTable();
+	System.out.println();
+	System.out.println(String.format("%s -> %s: %s",
+		    "A", "B", g.getEdgeWeightAsString("A", "B")));
+	System.out.println(String.format("%s -> %s: %s",
+		    "F", "A", g.getEdgeWeightAsString("F", "A")));
+	System.out.println(String.format("%s -> %s: %s",
+		    "F", "E", g.getEdgeWeightAsString("F", "E")));
     }
 }
