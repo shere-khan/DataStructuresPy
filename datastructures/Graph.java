@@ -6,9 +6,17 @@ public class Graph {
     private class Node {
 
 	public String value;
+	public Node prev;
+	public boolean isVisited;
+	public Integer weight;
+	// TODO: make adjacency list when adding edge
+	public List<Node> adj;
 
 	public Node(String value) {
 	    this.value = value;
+	    this.weight = 1000;
+	    this.isVisited = false;
+	    this.adj = new ArrayList<Node>();
 	}
 
 	@Override
@@ -46,11 +54,17 @@ public class Graph {
     }
 
     public Map<Node, Map<Node, Edge>> table;
+    public Map<String, Node> nodeMap;
     private boolean isDirected;
 
     public Graph(boolean isDirected) {
 	this.isDirected = isDirected;
 	this.table = new HashMap<Node, Map<Node, Edge>>();
+	nodeMap = new HashMap<String, Node>();
+    }
+
+    private Node getNode(String n) {
+	return nodeMap.get(n);
     }
 
     private void printTable() {
@@ -70,19 +84,14 @@ public class Graph {
 	System.out.println("adding node " + n.toString());
 	// Insert node into table.
 	table.put(n, new HashMap<Node, Edge>());
+	// put node into separate map for futre reference
+	nodeMap.put(n.value, n);
 	// Associate node with each existing node.
 	for (Map<Node, Edge> map: table.values())
 	    map.put(n, null);
 	// Associate each existing node with new node.
 	for (Node o : table.keySet())
 	    table.get(n).put(o, null);
-	// for (Map.Entry<Node, Map<Node, Edge>> entry : table.entrySet()) {
-	//     Node o = entry.getKey(); 
-	//     Map<Node, Edge> map = entry.getValue();
-	//     System.out.println(String.format("add %s to map %s",
-	// 	       	n.toString(), o.toString()));
-	//     map.put(n, null);
-	// }
 
 	return n;
     }
@@ -124,8 +133,51 @@ public class Graph {
 	    throw new IllegalArgumentException("n1 or n2 null");
 	Edge e = new Edge(n1, n2, w);
 	addEdge(n1, n2, e);
-	if (!isDirected)
+	n1.adj.add(n2);
+	if (!isDirected) {
 	    addEdge(n2, n1, e);
+	    n2.adj.add(n1);
+	}
+    }
+
+    public void dijkstra(String source) {
+	Comparator<Node> nodeComparator = new Comparator<Node>() {
+
+	    @Override
+	    public int compare(Node n1, Node n2) {
+		// return .compareTo(n2.weight);
+		return 1;
+	    }
+	};
+	Queue<Node> q = new PriorityQueue<Node>(10, nodeComparator);
+	Node s = getNode(source);
+	s.weight = 0;
+	q.add(s);
+	while (!q.isEmpty()) {
+	    Node o = q.remove();
+	    for (Node a : o.adj) {
+		relax(o, a, q);
+	    }
+	}
+    }
+
+    public void printShortestPath(String dest) {
+	Node cur = getNode(dest);
+	System.out.println(cur.value);
+	while(cur.prev != null) {
+	    cur = cur.prev;
+	    System.out.println(cur.value);
+	}
+    }
+
+    private void relax(Node n1, Node n2, Queue<Node> q) {
+	Edge e = table.get(n1).get(n2);
+	Integer dist = n1.weight + e.weight;
+	if (dist < n2.weight) {
+	    n2.weight = dist;
+	    n2.prev = n1;
+	    q.add(n2);
+	}
     }
 
     public static void main(String[] args) {
@@ -158,5 +210,7 @@ public class Graph {
 	// 	    "E", "B", g.getEdgeWeightAsString("E", "B")));
 
 	// Dijkstra
+	g.dijkstra("A");
+	g.printShortestPath("G");
     }
 }
