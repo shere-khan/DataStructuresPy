@@ -16,6 +16,7 @@ public class Graph {
 	    final int prime = 31;
 	    int result = 17;
 	    result = prime * result + value.hashCode();
+	    // System.out.println("hashcode: " + result);
 
 	    return result;
 	}
@@ -56,11 +57,16 @@ public class Graph {
 	System.out.println("printing table");
 	for (Map.Entry<Node, Map<Node, Edge>> entry : table.entrySet()) {
 	    System.out.println("values in " + entry.getKey().toString());
+	    Map<Node, Edge> tab2 = entry.getValue();
+	    System.out.println("assoc nodes");
+	    for (Node entry2: tab2.keySet()) {
+		System.out.println(entry2.toString());
+	    }
+	    System.out.println();
 	}
     }
     
-    private Node addNodeToTable(String v) {
-	Node n = new Node(v);
+    private Node addNodeToTable(Node n) {
 	table.put(n, new HashMap<Node, Edge>());
 	for (Map<Node, Edge> map: table.values()) {
 	    // System.out.println("value: " + map.toString());
@@ -88,12 +94,14 @@ public class Graph {
     }
 
     public void insertEdge(String v1, String v2, Integer w) {
-	Node n1 = null;
-	Node n2 = null;
-	if (!table.containsKey(v1))
-	    n1 = addNodeToTable(v1);
-	if (!table.containsKey(v2))
-	    n2 = addNodeToTable(v2);
+	Node n1 = new Node(v1);
+	Node n2 = new Node(v2);
+	if (!table.containsKey(n1)) {
+	    n1 = addNodeToTable(n1);
+	} 
+	if (!table.containsKey(n2)) {
+	    n2 = addNodeToTable(n2);
+	}
 	if (n1 == null || n2 == null)
 	    throw new IllegalArgumentException("n1 or n2 null");
 	Edge e = new Edge(n1, n2, w);
@@ -105,6 +113,9 @@ public class Graph {
     public static void main(String[] args) {
 	Graph g = new Graph(false);
 	g.insertEdge("A", "B", 2);
+	g.printTable();
+	System.out.println();
+	g.insertEdge("F", "A", 3);
 	g.printTable();
     }
 }
