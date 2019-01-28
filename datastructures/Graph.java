@@ -23,7 +23,6 @@ public class Graph {
 	    final int prime = 31;
 	    int result = 17;
 	    result = prime * result + value.hashCode();
-	    // System.out.println("hashcode: " + result);
 
 	    return result;
 	}
@@ -67,11 +66,9 @@ public class Graph {
     }
 
     private void printTable() {
-	// System.out.println("printing table");
 	for (Map.Entry<Node, Map<Node, Edge>> entry : table.entrySet()) {
 	    System.out.println("values in " + entry.getKey().toString());
 	    Map<Node, Edge> tab2 = entry.getValue();
-	    // System.out.println("assoc nodes");
 	    for (Node entry2: tab2.keySet()) {
 		System.out.println(entry2.toString());
 	    }
@@ -80,7 +77,6 @@ public class Graph {
     }
     
     private Node addNodeToTable(String v) {
-	// System.out.println("adding node " + n.toString());
 	// Insert node into table.
 	Node n = new Node(v);
 	table.put(n, new HashMap<Node, Edge>());
@@ -140,11 +136,6 @@ public class Graph {
 	Edge e = new Edge(n1, n2, w);
 	addEdge(n1, n2, e);
 	n1.adj.add(n2);
-	// System.out.println(String.format("%s adj list inside insertEdge",
-	// 	    n1.value));
-	// for (Node a : n1.adj) {
-	//     System.out.println("adj " + a.value);
-	// }
 	if (!isDirected) {
 	    addEdge(n2, n1, e);
 	    n2.adj.add(n1);
@@ -200,17 +191,10 @@ public class Graph {
     public static void main(String[] args) {
 	Graph g = new Graph(true);
 	g.insertEdge("A", "B", 2);
-	// g.printAdjListAllNodes();
-	// System.out.println();
 
 	g.insertEdge("E", "A", 3);
-	// g.printAdjListAllNodes();
-	// System.out.println();
 	g.insertEdge("E", "B", 1);
-	// g.printAdjListAllNodes();
-	// System.out.println();
 	g.insertEdge("E", "F", 3);
-	// System.out.println();
 
 	g.insertEdge("B", "C", 8);
 	g.insertEdge("B", "G", 1);
@@ -223,16 +207,8 @@ public class Graph {
 
 	g.insertEdge("G", "D", 2);
 
-	// g.printTable();
-	 g.printAdjListAllNodes();
+	g.printAdjListAllNodes();
 	System.out.println();
-
-	// System.out.println(String.format("%s -> %s: %s",
-		    // "A", "B", g.getEdgeWeightAsString("A", "B")));
-	// System.out.println(String.format("%s -> %s: %s",
-	// 	    "E", "A", g.getEdgeWeightAsString("E", "A")));
-	// System.out.println(String.format("%s -> %s: %s",
-	// 	    "E", "B", g.getEdgeWeightAsString("E", "B")));
 
 	// Dijkstra
 	g.dijkstra("E");
