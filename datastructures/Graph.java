@@ -9,7 +9,6 @@ public class Graph {
 	public Node prev;
 	public boolean isVisited;
 	public Integer weight;
-	// TODO: make adjacency list when adding edge
 	public List<Node> adj;
 
 	public Node(String value) {
@@ -68,11 +67,11 @@ public class Graph {
     }
 
     private void printTable() {
-	System.out.println("printing table");
+	// System.out.println("printing table");
 	for (Map.Entry<Node, Map<Node, Edge>> entry : table.entrySet()) {
 	    System.out.println("values in " + entry.getKey().toString());
 	    Map<Node, Edge> tab2 = entry.getValue();
-	    System.out.println("assoc nodes");
+	    // System.out.println("assoc nodes");
 	    for (Node entry2: tab2.keySet()) {
 		System.out.println(entry2.toString());
 	    }
@@ -80,9 +79,10 @@ public class Graph {
 	}
     }
     
-    private Node addNodeToTable(Node n) {
-	System.out.println("adding node " + n.toString());
+    private Node addNodeToTable(String v) {
+	// System.out.println("adding node " + n.toString());
 	// Insert node into table.
+	Node n = new Node(v);
 	table.put(n, new HashMap<Node, Edge>());
 	// put node into separate map for futre reference
 	nodeMap.put(n.value, n);
@@ -100,10 +100,6 @@ public class Graph {
 	table.get(n1).put(n2, e);
     }
 
-    public void testAddNode(String v) {
-	table.put(new Node(v), null);
-    }
-
     private Integer stringToAscii(String s) {
 	StringBuilder sb = new StringBuilder();
 	char[] letters = s.toCharArray();
@@ -111,63 +107,6 @@ public class Graph {
 	    sb.append((byte) ch);
 
 	return Integer.parseInt(sb.toString());
-    }
-
-    public String getEdgeWeightAsString(String from, String to) {
-	// Map<Node, Edge> tab2 = table.get(new Node(from));
-	// Edge e = tab2.get(new Node(to));
-	// String edgeWeight = e.weight.toString();
-	return table.get(new Node(from)).get(new Node(to)).weight.toString();
-    }
-
-    public void insertEdge(String v1, String v2, Integer w) {
-	Node n1 = new Node(v1);
-	Node n2 = new Node(v2);
-	if (!table.containsKey(n1))
-	    n1 = addNodeToTable(n1);
-	if (!table.containsKey(n2)) {
-	    System.out.println("contains " + n2.toString());
-	    n2 = addNodeToTable(n2);
-	}
-	if (n1 == null || n2 == null)
-	    throw new IllegalArgumentException("n1 or n2 null");
-	Edge e = new Edge(n1, n2, w);
-	addEdge(n1, n2, e);
-	n1.adj.add(n2);
-	if (!isDirected) {
-	    addEdge(n2, n1, e);
-	    n2.adj.add(n1);
-	}
-    }
-
-    public void dijkstra(String source) {
-	Comparator<Node> nodeComparator = new Comparator<Node>() {
-
-	    @Override
-	    public int compare(Node n1, Node n2) {
-		// return .compareTo(n2.weight);
-		return 1;
-	    }
-	};
-	Queue<Node> q = new PriorityQueue<Node>(10, nodeComparator);
-	Node s = getNode(source);
-	s.weight = 0;
-	q.add(s);
-	while (!q.isEmpty()) {
-	    Node o = q.remove();
-	    for (Node a : o.adj) {
-		relax(o, a, q);
-	    }
-	}
-    }
-
-    public void printShortestPath(String dest) {
-	Node cur = getNode(dest);
-	System.out.println(cur.value);
-	while(cur.prev != null) {
-	    cur = cur.prev;
-	    System.out.println(cur.value);
-	}
     }
 
     private void relax(Node n1, Node n2, Queue<Node> q) {
@@ -180,13 +119,98 @@ public class Graph {
 	}
     }
 
+    public void testAddNode(String v) {
+	table.put(new Node(v), null);
+    }
+
+    public String getEdgeWeightAsString(String from, String to) {
+	return table.get(new Node(from)).get(new Node(to)).weight.toString();
+    }
+
+    public void insertEdge(String v1, String v2, Integer w) {
+	System.out.println(String.format("inserting edge %s -> %s", v1, v2));
+	if (!nodeMap.containsKey(v1))
+	    addNodeToTable(v1);
+	if (!nodeMap.containsKey(v2))
+	    addNodeToTable(v2);
+	Node n1 = nodeMap.get(v1);
+	Node n2 = nodeMap.get(v2);
+	if (n1 == null || n2 == null)
+	    throw new IllegalArgumentException("n1 or n2 null");
+	Edge e = new Edge(n1, n2, w);
+	addEdge(n1, n2, e);
+	n1.adj.add(n2);
+	// System.out.println(String.format("%s adj list inside insertEdge",
+	// 	    n1.value));
+	// for (Node a : n1.adj) {
+	//     System.out.println("adj " + a.value);
+	// }
+	if (!isDirected) {
+	    addEdge(n2, n1, e);
+	    n2.adj.add(n1);
+	}
+    }
+
+    public void dijkstra(String source) {
+	Comparator<Node> nodeComparator = new Comparator<Node>() {
+
+	    @Override
+	    public int compare(Node n1, Node n2) {
+		return Integer.compare(n1.weight.intValue(), n2.weight.intValue());
+	    }
+	};
+	Queue<Node> q = new PriorityQueue<Node>(10, nodeComparator);
+	Node s = getNode(source);
+	System.out.println("start node " + s.value);
+	System.out.println("print nodes in nmap");
+	for (Node m : nodeMap.values()) {
+	    System.out.println("node val " + m.value);
+	}
+	s.weight = 0;
+	q.add(s);
+	while (!q.isEmpty()) {
+	    Node o = q.remove();
+	    System.out.println("current node val: " + o.value);
+	    for (Node a : o.adj) {
+		System.out.println("adjacent: " + a.value);
+		relax(o, a, q);
+	    }
+	    System.out.println();
+	}
+    }
+
+    public void printShortestPath(String dest) {
+	Node cur = getNode(dest);
+	System.out.println(cur.value);
+	while(cur.prev != null) {
+	    cur = cur.prev;
+	    System.out.println(cur.value);
+	}
+    }
+
+    public void printAdjListAllNodes() {
+	for (Node n : nodeMap.values()) {
+	    System.out.println(String.format("%s adj list inside printadj", n.value));
+	    for (Node adj : n.adj) {
+		System.out.println("adj " + adj.value);
+	    }
+	}
+    }
+
     public static void main(String[] args) {
-	Graph g = new Graph(false);
+	Graph g = new Graph(true);
 	g.insertEdge("A", "B", 2);
+	// g.printAdjListAllNodes();
+	// System.out.println();
 
 	g.insertEdge("E", "A", 3);
+	// g.printAdjListAllNodes();
+	// System.out.println();
 	g.insertEdge("E", "B", 1);
+	// g.printAdjListAllNodes();
+	// System.out.println();
 	g.insertEdge("E", "F", 3);
+	// System.out.println();
 
 	g.insertEdge("B", "C", 8);
 	g.insertEdge("B", "G", 1);
@@ -199,18 +223,19 @@ public class Graph {
 
 	g.insertEdge("G", "D", 2);
 
-	g.printTable();
+	// g.printTable();
+	 g.printAdjListAllNodes();
 	System.out.println();
 
 	// System.out.println(String.format("%s -> %s: %s",
-	// 	    "A", "B", g.getEdgeWeightAsString("A", "B")));
+		    // "A", "B", g.getEdgeWeightAsString("A", "B")));
 	// System.out.println(String.format("%s -> %s: %s",
 	// 	    "E", "A", g.getEdgeWeightAsString("E", "A")));
 	// System.out.println(String.format("%s -> %s: %s",
 	// 	    "E", "B", g.getEdgeWeightAsString("E", "B")));
 
 	// Dijkstra
-	g.dijkstra("A");
-	g.printShortestPath("G");
+	g.dijkstra("E");
+	g.printShortestPath("H");
     }
 }
